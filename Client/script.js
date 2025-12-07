@@ -5,21 +5,24 @@ const properties = [
         description:
             "Experience comfortable city living in this stylish penthouse, offering essential luxury and stunning views.",
         image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80",
-        price: "₹7.1 Cr",
+        price: "₹45,000/month",
+        priceValue: 45000, // Monthly rent in rupees
     },
     {
         title: "Penthouse - Tower B",
         description:
             "Indulge in minimalist elegance within this expansive penthouse, featuring modern amenities and a seamless open-plan design.",
         image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=600&q=80",
-        price: "₹10 Cr",
+        price: "₹50,000/month",
+        priceValue: 50000,
     },
     {
         title: "Penthouse - Tower C",
         description:
             "Discover unparalleled luxury in this sophisticated penthouse, boasting premium smart home technology, high-end finishes, and breathtaking panoramic vistas.",
         image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80",
-        price: "₹15.5 Cr",
+        price: "₹55,000/month",
+        priceValue: 55000,
     },
 ]
 
@@ -30,8 +33,9 @@ const offers = [
         description: "Enjoy a stylish and comfortable living space with essential amenities and a pleasant view of Kediri.",
         discount: "20% Discount",
         image: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=600&q=80",
-        price: "₹2.7 Cr",
-        originalPrice: "₹3.3 Cr",
+        price: "₹12,000/month",
+        originalPrice: "₹15,000/month",
+        priceValue: 12000,
     },
     {
         title: "1 Bedroom - Tower B",
@@ -39,8 +43,9 @@ const offers = [
             "Experience modern living in this well-appointed apartment, featuring elegant finishes and a touch of luxury.",
         discount: "20% Discount",
         image: "https://images.unsplash.com/photo-1600573472550-8090b5e0745e?w=600&q=80",
-        price: "₹3.3 Cr",
-        originalPrice: "₹4.2 Cr",
+        price: "₹16,000/month",
+        originalPrice: "₹20,000/month",
+        priceValue: 16000,
     },
     {
         title: "1 Bedroom - Tower C",
@@ -48,16 +53,18 @@ const offers = [
             "Indulge in upscale urban living within this sophisticated apartment, offering premium comfort and exclusive features.",
         discount: "10% Discount",
         image: "https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?w=600&q=80",
-        price: "₹4.5 Cr",
-        originalPrice: "₹5 Cr",
+        price: "₹18,000/month",
+        originalPrice: "₹20,000/month",
+        priceValue: 18000,
     },
     {
         title: "2 Bedroom - Tower A",
         description: "Enjoy a stylish and comfortable living space with essential amenities and a pleasant view of Kediri.",
         discount: "20% Discount",
         image: "https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?w=600&q=80",
-        price: "₹4 Cr",
-        originalPrice: "₹5 Cr",
+        price: "₹20,000/month",
+        originalPrice: "₹25,000/month",
+        priceValue: 20000,
     },
     {
         title: "2 Bedroom - Tower B",
@@ -65,8 +72,9 @@ const offers = [
             "Experience modern living in this well-appointed apartment, featuring elegant finishes and a touch of luxury.",
         discount: "20% Discount",
         image: "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=600&q=80",
-        price: "₹5.3 Cr",
-        originalPrice: "₹6.7 Cr",
+        price: "₹24,000/month",
+        originalPrice: "₹30,000/month",
+        priceValue: 24000,
     },
     {
         title: "2 Bedroom - Tower C",
@@ -74,8 +82,9 @@ const offers = [
             "Indulge in upscale urban living within this sophisticated apartment, offering premium comfort and exclusive features.",
         discount: "10% Discount",
         image: "https://images.unsplash.com/photo-1600607687644-c7171b42498f?w=600&q=80",
-        price: "₹6.8 Cr",
-        originalPrice: "₹7.5 Cr",
+        price: "₹27,000/month",
+        originalPrice: "₹30,000/month",
+        priceValue: 27000,
     },
 ]
 
@@ -95,7 +104,7 @@ function renderProperties() {
 
     propertyGrid.innerHTML = properties
         .map(
-            (property) => `
+            (property, index) => `
     <div class="property-card">
       <img src="${property.image}" alt="${property.title}" loading="lazy">
       <div class="details-btn">Details</div>
@@ -106,13 +115,16 @@ function renderProperties() {
         </div>
         <div class="property-actions">
           <div class="property-price">${property.price}</div>
-          <button class="btn-buy-now">Buy Now</button>
+          <button class="btn-buy-now" data-type="property" data-index="${index}" data-title="${property.title}" data-price="${property.priceValue}" data-display-price="${property.price}">Buy Now</button>
         </div>
       </div>
     </div>
   `,
         )
         .join("")
+
+    // Add event listeners to Buy Now buttons
+    attachBuyNowListeners()
 }
 
 // Render offer cards
@@ -121,7 +133,7 @@ function renderOffers() {
 
     offersGrid.innerHTML = offers
         .map(
-            (offer) => `
+            (offer, index) => `
     <div class="offer-card">
       <img src="${offer.image}" alt="${offer.title}" loading="lazy">
       <div class="discount-badge">
@@ -140,13 +152,16 @@ function renderOffers() {
             <div class="offer-price">${offer.price}</div>
             <div class="offer-original-price">${offer.originalPrice}</div>
           </div>
-          <button class="btn-buy-now">Buy Now</button>
+          <button class="btn-buy-now" data-type="offer" data-index="${index}" data-title="${offer.title}" data-price="${offer.priceValue}" data-display-price="${offer.price}">Buy Now</button>
         </div>
       </div>
     </div>
   `,
         )
         .join("")
+
+    // Add event listeners to Buy Now buttons
+    attachBuyNowListeners()
 }
 
 // Scroll properties carousel
@@ -229,10 +244,159 @@ window.addEventListener("resize", () => {
     }
 })
 
+// Payment Gateway Integration
+const RAZORPAY_KEY_ID = "rzp_test_RMKz5sso9Q16ay" // Your Razorpay Key ID
+
+// Attach event listeners to Buy Now buttons
+function attachBuyNowListeners() {
+    const buyNowButtons = document.querySelectorAll(".btn-buy-now")
+    buyNowButtons.forEach((button) => {
+        button.addEventListener("click", handleBuyNow)
+    })
+}
+
+// Handle Buy Now button click
+async function handleBuyNow(e) {
+    const button = e.target
+    const title = button.getAttribute("data-title")
+    const price = parseInt(button.getAttribute("data-price"))
+    const displayPrice = button.getAttribute("data-display-price")
+
+    // Show loading state
+    button.disabled = true
+    button.textContent = "Processing..."
+
+    try {
+        // Create order on backend
+        const order = await createOrder(price, title)
+
+        // Initialize Razorpay payment
+        const options = {
+            key: RAZORPAY_KEY_ID,
+            amount: order.amount,
+            currency: order.currency,
+            name: "Liventa Residence",
+            description: `Purchase of ${title}`,
+            order_id: order.id,
+            handler: function (response) {
+                handlePaymentSuccess(response, title, displayPrice)
+            },
+            prefill: {
+                name: "",
+                email: "",
+                contact: "",
+            },
+            theme: {
+                color: "#1a1a1a",
+            },
+            modal: {
+                ondismiss: function () {
+                    button.disabled = false
+                    button.textContent = "Buy Now"
+                },
+            },
+        }
+
+        const razorpay = new Razorpay(options)
+        razorpay.on("payment.failed", function (response) {
+            handlePaymentFailure(response)
+            button.disabled = false
+            button.textContent = "Buy Now"
+        })
+
+        razorpay.open()
+    } catch (error) {
+        console.error("Error initiating payment:", error)
+        alert("Failed to initiate payment. Please try again.")
+        button.disabled = false
+        button.textContent = "Buy Now"
+    }
+}
+
+// Create order on backend
+async function createOrder(amount, description) {
+    try {
+        const response = await fetch("http://localhost:5000/order", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                amount: amount,
+                currency: "INR",
+                receipt: `receipt_${Date.now()}`,
+            }),
+        })
+
+        if (!response.ok) {
+            throw new Error("Failed to create order")
+        }
+
+        const order = await response.json()
+        return order
+    } catch (error) {
+        console.error("Error creating order:", error)
+        throw error
+    }
+}
+
+// Handle successful payment
+function handlePaymentSuccess(response, title, price) {
+    console.log("Payment successful:", response)
+    alert(
+        `Payment Successful!\n\nProperty: ${title}\nMonthly Rent: ${price}\n\nPayment ID: ${response.razorpay_payment_id}\n\nThank you for your payment! Your rental booking has been confirmed.`
+    )
+    // You can add additional logic here, such as:
+    // - Sending confirmation email
+    // - Updating database
+    // - Redirecting to booking confirmation page
+}
+
+// Handle failed payment
+function handlePaymentFailure(response) {
+    console.error("Payment failed:", response)
+    alert(
+        `Payment Failed!\n\nReason: ${response.error.description}\n\nPlease try again or contact support.`
+    )
+}
+
+// Contact Form Handler
+function handleContactForm(e) {
+    e.preventDefault()
+
+    const form = e.target
+    const formData = new FormData(form)
+    const data = Object.fromEntries(formData)
+
+    console.log("Contact form submitted:", data)
+
+    // Show success message
+    alert(
+        `Thank you for contacting us!\n\nWe have received your message and will get back to you shortly.\n\nName: ${data.name}\nEmail: ${data.email}`
+    )
+
+    // Reset form
+    form.reset()
+
+    // Here you can add logic to send the form data to your backend
+    // Example:
+    // fetch('/api/contact', {
+    //     method: 'POST',
+    //     headers: { 'Content-Type': 'application/json' },
+    //     body: JSON.stringify(data)
+    // })
+}
+
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
     renderProperties()
     renderOffers()
     initSmoothScroll()
     handleScroll() // Check initial scroll position
+
+    // Add contact form listener
+    const contactForm = document.getElementById("contactForm")
+    if (contactForm) {
+        contactForm.addEventListener("submit", handleContactForm)
+    }
 })
