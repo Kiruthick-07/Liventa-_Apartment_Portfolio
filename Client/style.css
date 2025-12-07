@@ -179,9 +179,9 @@ nav a:hover {
 }
 
 .user-name {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--primary);
+    color: var(--white);
+    font-size: 24px;
+    font-weight: 600;
 }
 
 .btn-logout {
