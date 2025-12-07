@@ -145,6 +145,8 @@
     </section>
 
     <script>
+        const API_URL = 'http://localhost:3000/api/auth';
+
         // Password strength indicator
         const passwordInput = document.getElementById('password');
         const strengthBar = document.querySelector('.strength-bar');
@@ -166,19 +168,66 @@
         });
 
         // Form submission handler
-        document.getElementById('signupForm').addEventListener('submit', function (e) {
+        document.getElementById('signupForm').addEventListener('submit', async function (e) {
             e.preventDefault();
 
+            const submitBtn = this.querySelector('.btn-submit');
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
 
+            // Validate passwords match
             if (password !== confirmPassword) {
                 alert('Passwords do not match!');
                 return;
             }
 
-            // Add your signup logic here
-            alert('Sign up functionality will be implemented with backend integration');
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Creating Account...';
+
+            try {
+                const response = await fetch(`${API_URL}/signup`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        firstName,
+                        lastName,
+                        email,
+                        phone,
+                        password,
+                        confirmPassword,
+                    }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store token
+                    localStorage.setItem('liventaToken', data.token);
+                    localStorage.setItem('liventaUser', JSON.stringify(data.user));
+
+                    // Show success message
+                    alert(`Welcome to Liventa, ${data.user.firstName}!\n\nYour account has been created successfully!`);
+
+                    // Redirect to home page
+                    window.location.href = 'index.html';
+                } else {
+                    alert(`Sign Up Failed\n\n${data.message}`);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Create Account';
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                alert('Error connecting to server. Please make sure the authentication server is running on port 3000.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Create Account';
+            }
         });
     </script>
 </body>

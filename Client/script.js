@@ -387,6 +387,69 @@ function handleContactForm(e) {
     // })
 }
 
+// Authentication Functions
+function checkAuthState() {
+    const token = localStorage.getItem('liventaToken') || sessionStorage.getItem('liventaToken');
+    const userStr = localStorage.getItem('liventaUser') || sessionStorage.getItem('liventaUser');
+
+    // Desktop elements
+    const loginBtn = document.getElementById('loginBtn');
+    const userMenu = document.getElementById('userMenu');
+    const userName = document.getElementById('userName');
+
+    // Mobile elements
+    const mobileLoginBtn = document.getElementById('mobileLoginBtn');
+    const mobileUserMenu = document.getElementById('mobileUserMenu');
+    const mobileUserName = document.getElementById('mobileUserName');
+
+    if (token && userStr) {
+        try {
+            const user = JSON.parse(userStr);
+            const fullName = `${user.firstName} ${user.lastName}`;
+
+            // User is logged in - Desktop
+            if (loginBtn) loginBtn.style.display = 'none';
+            if (userMenu) userMenu.style.display = 'flex';
+            if (userName) userName.textContent = fullName;
+
+            // User is logged in - Mobile
+            if (mobileLoginBtn) mobileLoginBtn.style.display = 'none';
+            if (mobileUserMenu) mobileUserMenu.style.display = 'flex';
+            if (mobileUserName) mobileUserName.textContent = fullName;
+        } catch (error) {
+            console.error('Error parsing user data:', error);
+            // Clear invalid data
+            clearAuthData();
+        }
+    } else {
+        // User is not logged in - Desktop
+        if (loginBtn) loginBtn.style.display = 'block';
+        if (userMenu) userMenu.style.display = 'none';
+
+        // User is not logged in - Mobile
+        if (mobileLoginBtn) mobileLoginBtn.style.display = 'block';
+        if (mobileUserMenu) mobileUserMenu.style.display = 'none';
+    }
+}
+
+function clearAuthData() {
+    localStorage.removeItem('liventaToken');
+    localStorage.removeItem('liventaUser');
+    sessionStorage.removeItem('liventaToken');
+    sessionStorage.removeItem('liventaUser');
+}
+
+function handleLogout() {
+    // Clear authentication data
+    clearAuthData();
+
+    // Show success message
+    alert('You have been logged out successfully!');
+
+    // Reload page to update UI
+    window.location.reload();
+}
+
 // Initialize
 document.addEventListener("DOMContentLoaded", () => {
     renderProperties()
@@ -398,5 +461,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const contactForm = document.getElementById("contactForm")
     if (contactForm) {
         contactForm.addEventListener("submit", handleContactForm)
+    }
+
+    // Check authentication state
+    checkAuthState()
+
+    // Add logout button listeners (desktop and mobile)
+    const logoutBtn = document.getElementById('logoutBtn')
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout)
+    }
+
+    const mobileLogoutBtn = document.getElementById('mobileLogoutBtn')
+    if (mobileLogoutBtn) {
+        mobileLogoutBtn.addEventListener('click', handleLogout)
     }
 })

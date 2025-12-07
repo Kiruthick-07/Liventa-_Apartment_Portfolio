@@ -171,6 +171,37 @@ nav a:hover {
     background: var(--accent);
 }
 
+/* User Menu */
+.user-menu {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary);
+}
+
+.btn-logout {
+    background: var(--primary);
+    color: var(--white);
+    padding: 12px 24px;
+    border-radius: 25px;
+    border: none;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: "Inter", sans-serif;
+}
+
+.btn-logout:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
+}
+
 /* Mobile Navigation */
 .mobile-nav-overlay {
     display: none;

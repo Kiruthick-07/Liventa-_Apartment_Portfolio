@@ -40,7 +40,13 @@
         </nav>
         <div class="header-actions">
             <a href="#contact" class="btn-contact">Contact</a>
-            <a href="login.html" class="btn-login">Login</a>
+            <!-- Logged out state -->
+            <a href="login.html" class="btn-login" id="loginBtn">Login</a>
+            <!-- Logged in state (hidden by default) -->
+            <div class="user-menu" id="userMenu" style="display: none;">
+                <span class="user-name" id="userName">User</span>
+                <button class="btn-logout" id="logoutBtn">Logout</button>
+            </div>
         </div>
     </header>
 
@@ -55,7 +61,13 @@
         <a href="#contact">Contact</a>
         <div class="mobile-nav-actions">
             <a href="#contact" class="btn-contact">Contact</a>
-            <a href="login.html" class="btn-login">Login</a>
+            <!-- Logged out state -->
+            <a href="login.html" class="btn-login" id="mobileLoginBtn">Login</a>
+            <!-- Logged in state (hidden by default) -->
+            <div class="user-menu" id="mobileUserMenu" style="display: none;">
+                <span class="user-name" id="mobileUserName">User</span>
+                <button class="btn-logout" id="mobileLogoutBtn">Logout</button>
+            </div>
         </div>
     </div>
 
@@ -242,7 +254,7 @@
                     </div>
                     <h3>Email</h3>
                     <p>154ramya@gmail.com</p>
-                    
+
                 </div>
 
                 <div class="contact-card">

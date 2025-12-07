@@ -104,11 +104,58 @@
     </section>
 
     <script>
+        const API_URL = 'http://localhost:3000/api/auth';
+
         // Form submission handler
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            // Add your login logic here
-            alert('Login functionality will be implemented with backend integration');
+
+            const submitBtn = this.querySelector('.btn-submit');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('remember').checked;
+
+            // Show loading state
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Logging in...';
+
+            try {
+                const response = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password }),
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    // Store token
+                    if (remember) {
+                        localStorage.setItem('liventaToken', data.token);
+                        localStorage.setItem('liventaUser', JSON.stringify(data.user));
+                    } else {
+                        sessionStorage.setItem('liventaToken', data.token);
+                        sessionStorage.setItem('liventaUser', JSON.stringify(data.user));
+                    }
+
+                    // Show success message
+                    alert(`Welcome back, ${data.user.firstName}!\n\nLogin successful!`);
+
+                    // Redirect to home page
+                    window.location.href = 'index.html';
+                } else {
+                    alert(`Login Failed\n\n${data.message}`);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'Login';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                alert('Error connecting to server. Please make sure the authentication server is running on port 3000.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Login';
+            }
         });
     </script>
 </body>
