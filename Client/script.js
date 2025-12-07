@@ -361,30 +361,47 @@ function handlePaymentFailure(response) {
 }
 
 // Contact Form Handler
-function handleContactForm(e) {
+async function handleContactForm(e) {
     e.preventDefault()
 
     const form = e.target
+    const submitBtn = form.querySelector('.btn-submit-contact')
     const formData = new FormData(form)
     const data = Object.fromEntries(formData)
 
     console.log("Contact form submitted:", data)
 
-    // Show success message
-    alert(
-        `Thank you for contacting us!\n\nWe have received your message and will get back to you shortly.\n\nName: ${data.name}\nEmail: ${data.email}`
-    )
+    // Show loading state
+    submitBtn.disabled = true
+    submitBtn.textContent = 'Sending...'
 
-    // Reset form
-    form.reset()
+    try {
+        // Send form data to backend
+        const response = await fetch('http://localhost:3000/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
 
-    // Here you can add logic to send the form data to your backend
-    // Example:
-    // fetch('/api/contact', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify(data)
-    // })
+        const result = await response.json()
+
+        if (result.success) {
+            // Show success message
+            alert(result.message)
+            // Reset form
+            form.reset()
+        } else {
+            // Show error message
+            alert(`Error: ${result.message}`)
+        }
+    } catch (error) {
+        console.error('Contact form error:', error)
+        alert('Failed to send message. Please make sure the server is running on port 3000.')
+    } finally {
+        // Reset button state
+        submitBtn.disabled = false
+        submitBtn.textContent = 'Send Message'
+    }
 }
 
 // Authentication Functions

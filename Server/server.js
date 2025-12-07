@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
+const nodemailer = require("nodemailer");
 require("dotenv").config();
 
 const app = express();
@@ -296,6 +297,77 @@ app.post("/api/auth/logout", (req, res) => {
         success: true,
         message: "Logged out successfully",
     });
+});
+
+// Contact Form Route
+app.post("/api/contact", async (req, res) => {
+    try {
+        const { name, email, phone, subject, message } = req.body;
+
+        // Validation
+        if (!name || !email || !phone || !subject || !message) {
+            return res.status(400).json({
+                success: false,
+                message: "All fields are required",
+            });
+        }
+
+        // Configure nodemailer transporter
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+        });
+
+        // Email content
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: process.env.EMAIL_TO,
+            subject: `New Contact Form Submission: ${subject}`,
+            html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <h2 style="color: #1a1a1a; border-bottom: 2px solid #1a1a1a; padding-bottom: 10px;">
+                        New Contact Form Submission
+                    </h2>
+                    
+                    <div style="margin: 20px 0;">
+                        <p style="margin: 10px 0;"><strong>Name:</strong> ${name}</p>
+                        <p style="margin: 10px 0;"><strong>Email:</strong> ${email}</p>
+                        <p style="margin: 10px 0;"><strong>Phone:</strong> ${phone}</p>
+                        <p style="margin: 10px 0;"><strong>Subject:</strong> ${subject}</p>
+                    </div>
+                    
+                    <div style="background-color: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                        <h3 style="color: #1a1a1a; margin-top: 0;">Message:</h3>
+                        <p style="white-space: pre-wrap; line-height: 1.6;">${message}</p>
+                    </div>
+                    
+                    <p style="color: #666; font-size: 12px; margin-top: 30px; border-top: 1px solid #ddd; padding-top: 10px;">
+                        This email was sent from the Liventa contact form.
+                    </p>
+                </div>
+            `,
+        };
+
+        // Send email
+        await transporter.sendMail(mailOptions);
+
+        console.log("Contact form email sent successfully to:", process.env.EMAIL_TO);
+
+        res.json({
+            success: true,
+            message: "Your message has been sent successfully! We'll get back to you soon.",
+        });
+    } catch (error) {
+        console.error("Contact form error:", error);
+        res.status(500).json({
+            success: false,
+            message: "Failed to send message. Please try again later.",
+            error: error.message,
+        });
+    }
 });
 
 // Start Server
